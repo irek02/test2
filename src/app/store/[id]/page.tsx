@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createAccessiblePalette, getAccessibleTextColor } from '@/utils/colorUtils';
 import { StoreData, getStoreById } from '@/utils/storeStorage';
+import { getProductImage } from '@/utils/productImages';
 
 export default function StorePage() {
   const searchParams = useSearchParams();
@@ -144,19 +145,44 @@ export default function StorePage() {
         <div className="container">
           <h2 className="text-center mb-5" style={{ color: colors.primary }}>Our Products</h2>
           <div className="row g-4">
-            {storeData.products.map((product) => (
-              <div key={product.id} className="col-md-6 col-lg-4">
-                <div className="card h-100 shadow-sm">
-                  <div 
-                    className="card-img-top d-flex align-items-center justify-content-center"
-                    style={{ 
-                      height: '200px', 
-                      backgroundColor: colors.light,
-                      color: colors.muted
-                    }}
-                  >
-                    <i className="fas fa-image fa-3x"></i>
-                  </div>
+            {storeData.products.map((product) => {
+              const productImage = getProductImage(product.name, product.category, product.id, { width: 400, height: 300 });
+              
+              return (
+                <div key={product.id} className="col-md-6 col-lg-4">
+                  <div className="card h-100 shadow-sm">
+                    <div className="position-relative overflow-hidden" style={{ height: '200px' }}>
+                      <img
+                        src={productImage.primary}
+                        alt={productImage.alt}
+                        className="card-img-top w-100 h-100"
+                        style={{ 
+                          objectFit: 'cover',
+                          transition: 'all 0.3s ease',
+                          backgroundColor: colors.light
+                        }}
+                        loading="lazy"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = productImage.fallback;
+                        }}
+                        onMouseEnter={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.transform = 'scale(1.05)';
+                        }}
+                        onMouseLeave={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.transform = 'scale(1)';
+                        }}
+                      />
+                      <div 
+                        className="position-absolute top-0 start-0 w-100 h-100"
+                        style={{
+                          background: `linear-gradient(45deg, ${colors.primary}15, transparent)`,
+                          pointerEvents: 'none'
+                        }}
+                      ></div>
+                    </div>
                   <div className="card-body">
                     <div className="d-flex justify-content-between align-items-start mb-2">
                       <h5 className="card-title">{product.name}</h5>
@@ -189,7 +215,8 @@ export default function StorePage() {
                   </div>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
       </section>
