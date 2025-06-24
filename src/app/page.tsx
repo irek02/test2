@@ -204,7 +204,10 @@ export default function Home() {
                   <div className="mt-3 pt-3 border-top">
                     <button 
                       className="btn btn-success me-2"
-                      onClick={() => alert('Store preview coming in next feature!')}
+                      onClick={() => {
+                        const storeUrl = `/store/${generatedStore.id}?data=${encodeURIComponent(JSON.stringify(generatedStore))}`;
+                        window.open(storeUrl, '_blank');
+                      }}
                     >
                       View Full Store
                     </button>
