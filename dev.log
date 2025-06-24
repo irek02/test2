@@ -1,0 +1,90 @@
+
+> my-app@0.1.0 dev
+> next dev --turbopack
+
+   ▲ Next.js 15.3.4 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.186:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 644ms
+ ✓ Compiled /api/generate-store in 441ms
+Store generation error: Error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.
+    at APIError.generate (../src/core/error.ts:96:13)
+    at OpenAI.makeStatusError (src/client.ts:413:27)
+    at OpenAI.makeRequest (src/client.ts:634:23)
+    at async POST (src/app/api/generate-store/route.ts:26:23)
+  24 |     }
+  25 |
+> 26 |     const completion = await openai.chat.completions.create({
+     |                       ^
+  27 |       model: "gpt-4o-mini",
+  28 |       messages: [
+  29 |         { {
+  status: 429,
+  headers: Headers {
+    date: 'Tue, 24 Jun 2025 15:23:53 GMT',
+    'content-type': 'application/json; charset=utf-8',
+    'content-length': '337',
+    connection: 'keep-alive',
+    vary: 'Origin',
+    'x-request-id': 'req_ee3412817131fb3fa40067d33488e588',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'cf-cache-status': 'DYNAMIC',
+    'set-cookie': '__cf_bm=IchSAQmAr3aHbvsp5GQFeXRz8J4nQg1GbXFEyk7ZrtE-1750778633-1.0.1.1-7Y9_iP8DTir.K00pMgQIcWLiNJscV0_vVJyanwKCIneV6Cz4F7XYm_SltkV49o6nKYdVqbfZzb8idCsvFVyUw50nO_9AyZ1LmwLc4CwIF2A; path=/; expires=Tue, 24-Jun-25 15:53:53 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None, _cfuvid=KueY8nZNJrTaDKFokWCNvRN9qZBVTp0sdQEOT8adWKM-1750778633243-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None',
+    'x-content-type-options': 'nosniff',
+    server: 'cloudflare',
+    'cf-ray': '954d3a997e8ac95b-IAD',
+    'alt-svc': 'h3=":443"; ma=86400'
+  },
+  requestID: 'req_ee3412817131fb3fa40067d33488e588',
+  error: [Object],
+  code: 'insufficient_quota',
+  param: null,
+  type: 'insufficient_quota'
+}
+ POST /api/generate-store 500 in 2699ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1017ms
+ GET / 200 in 1124ms
+ ✓ Compiled /_not-found/page in 408ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 435ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 521ms
+Store generation error: Error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.
+    at APIError.generate (../src/core/error.ts:96:13)
+    at OpenAI.makeStatusError (src/client.ts:413:27)
+    at OpenAI.makeRequest (src/client.ts:634:23)
+    at async POST (src/app/api/generate-store/route.ts:26:23)
+  24 |     }
+  25 |
+> 26 |     const completion = await openai.chat.completions.create({
+     |                       ^
+  27 |       model: "gpt-4o-mini",
+  28 |       messages: [
+  29 |         { {
+  status: 429,
+  headers: Headers {
+    date: 'Tue, 24 Jun 2025 15:24:36 GMT',
+    'content-type': 'application/json; charset=utf-8',
+    'content-length': '337',
+    connection: 'keep-alive',
+    vary: 'Origin',
+    'x-request-id': 'req_805896a61e8171e6476186d53370e83d',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'cf-cache-status': 'DYNAMIC',
+    'set-cookie': '__cf_bm=XnjeId1TSS8ZsW_65TbshKaKTsNCirBOAYLcuZeevus-1750778676-1.0.1.1-dpdWFYUvuMTaJ3Fkpo5WgbEqXod2AzdNQKolUU26xpmfrrfywEvQy6Exu_bG3lQRIFYX8Zt9bVzak9nt4MfjjmBKsfhp6UEwsgyjnkzabO4; path=/; expires=Tue, 24-Jun-25 15:54:36 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None, _cfuvid=AJ9PRkuVaAg9P7RBcnllUuhudyumWG1fj8xhRB.S2jw-1750778676310-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None',
+    'x-content-type-options': 'nosniff',
+    server: 'cloudflare',
+    'cf-ray': '954d3ba6b95ed6e1-IAD',
+    'alt-svc': 'h3=":443"; ma=86400'
+  },
+  requestID: 'req_805896a61e8171e6476186d53370e83d',
+  error: [Object],
+  code: 'insufficient_quota',
+  param: null,
+  type: 'insufficient_quota'
+}
+ POST /api/generate-store 500 in 2136ms
+ ✓ Compiled in 261ms
+ ✓ Compiled in 267ms
