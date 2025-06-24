@@ -1,42 +1,20 @@
 
 'use client';
 
-import { useState } from 'react';
-
-interface StoreData {
-  id: string;
-  name: string;
-  tagline: string;
-  theme: {
-    primary: string;
-    secondary: string;
-    accent: string;
-  };
-  products: Array<{
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    category: string;
-  }>;
-  content: {
-    about: string;
-    hero: string;
-    contact: {
-      email: string;
-      phone: string;
-      address: string;
-    };
-  };
-  createdAt: string;
-  originalPrompt: string;
-}
+import { useState, useEffect } from 'react';
+import { StoreData, saveStore, getStoredStores, deleteStore } from '@/utils/storeStorage';
 
 export default function Home() {
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedStore, setGeneratedStore] = useState<StoreData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [savedStores, setSavedStores] = useState<StoreData[]>([]);
+
+  // Load saved stores on component mount
+  useEffect(() => {
+    setSavedStores(getStoredStores());
+  }, []);
 
   const handleGenerateStore = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,13 +39,33 @@ export default function Home() {
       }
 
       const storeData: StoreData = await response.json();
+      
+      // Save the store to localStorage
+      saveStore(storeData);
+      
+      // Update state
       setGeneratedStore(storeData);
+      setSavedStores(getStoredStores());
       
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  const handleDeleteStore = (storeId: string) => {
+    deleteStore(storeId);
+    setSavedStores(getStoredStores());
+    // If we're viewing the deleted store, clear it
+    if (generatedStore?.id === storeId) {
+      setGeneratedStore(null);
+    }
+  };
+
+  const handleViewStore = (store: StoreData) => {
+    const storeUrl = `/store/${store.id}?data=${encodeURIComponent(JSON.stringify(store))}`;
+    window.open(storeUrl, '_blank');
   };
 
   return (
@@ -244,6 +242,103 @@ export default function Home() {
                     >
                       {example}
                     </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Saved Stores Section */}
+          {savedStores.length > 0 && (
+            <div className="mt-5">
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <h5 className="mb-0">Your Generated Stores ({savedStores.length})</h5>
+                <button 
+                  className="btn btn-outline-danger btn-sm"
+                  onClick={() => {
+                    if (confirm('Are you sure you want to delete all stores?')) {
+                      localStorage.removeItem('ai_store_builder_stores');
+                      setSavedStores([]);
+                      setGeneratedStore(null);
+                    }
+                  }}
+                >
+                  Clear All
+                </button>
+              </div>
+              
+              <div className="row g-3">
+                {savedStores.map((store) => (
+                  <div key={store.id} className="col-md-6 col-lg-4">
+                    <div className="card h-100 shadow-sm">
+                      <div 
+                        className="card-header d-flex align-items-center p-3"
+                        style={{ backgroundColor: store.theme.primary + '15' }}
+                      >
+                        <div className="flex-grow-1">
+                          <h6 className="mb-0 fw-bold">{store.name}</h6>
+                          <small className="text-muted">{store.tagline}</small>
+                        </div>
+                        <div className="d-flex gap-1 ms-2">
+                          <div 
+                            className="rounded-circle" 
+                            style={{ 
+                              backgroundColor: store.theme.primary, 
+                              width: '12px', 
+                              height: '12px' 
+                            }}
+                            title={store.theme.primary}
+                          ></div>
+                          <div 
+                            className="rounded-circle" 
+                            style={{ 
+                              backgroundColor: store.theme.secondary, 
+                              width: '12px', 
+                              height: '12px' 
+                            }}
+                            title={store.theme.secondary}
+                          ></div>
+                          <div 
+                            className="rounded-circle" 
+                            style={{ 
+                              backgroundColor: store.theme.accent, 
+                              width: '12px', 
+                              height: '12px' 
+                            }}
+                            title={store.theme.accent}
+                          ></div>
+                        </div>
+                      </div>
+                      <div className="card-body">
+                        <p className="card-text small text-muted mb-2">
+                          &ldquo;{store.originalPrompt}&rdquo;
+                        </p>
+                        <div className="mb-3">
+                          <small className="text-muted">
+                            {store.products.length} products • {new Date(store.createdAt).toLocaleDateString()}
+                          </small>
+                        </div>
+                        <div className="d-flex gap-2">
+                          <button 
+                            className="btn btn-primary btn-sm flex-grow-1"
+                            onClick={() => handleViewStore(store)}
+                          >
+                            View Store
+                          </button>
+                          <button 
+                            className="btn btn-outline-danger btn-sm"
+                            onClick={() => {
+                              if (confirm(`Delete "${store.name}"?`)) {
+                                handleDeleteStore(store.id);
+                              }
+                            }}
+                            title="Delete Store"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>

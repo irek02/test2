@@ -1,58 +1,42 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createAccessiblePalette, getAccessibleTextColor } from '@/utils/colorUtils';
-
-interface StoreData {
-  id: string;
-  name: string;
-  tagline: string;
-  theme: {
-    primary: string;
-    secondary: string;
-    accent: string;
-  };
-  products: Array<{
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    category: string;
-  }>;
-  content: {
-    about: string;
-    hero: string;
-    contact: {
-      email: string;
-      phone: string;
-      address: string;
-    };
-  };
-  createdAt: string;
-  originalPrompt: string;
-}
+import { StoreData, getStoreById } from '@/utils/storeStorage';
 
 export default function StorePage() {
   const searchParams = useSearchParams();
+  const params = useParams();
   const [storeData, setStoreData] = useState<StoreData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // For now, we'll get store data from URL params
-    // In a real app, this would fetch from a database
-    const data = searchParams.get('data');
-    if (data) {
+    // Try to get store data from URL params first (for sharing)
+    const urlData = searchParams.get('data');
+    if (urlData) {
       try {
-        const parsed = JSON.parse(decodeURIComponent(data));
+        const parsed = JSON.parse(decodeURIComponent(urlData));
         setStoreData(parsed);
+        setLoading(false);
+        return;
       } catch (error) {
-        console.error('Failed to parse store data:', error);
+        console.error('Failed to parse URL store data:', error);
       }
     }
+    
+    // If no URL data, try to get from localStorage using the ID
+    const storeId = params.id as string;
+    if (storeId) {
+      const stored = getStoreById(storeId);
+      if (stored) {
+        setStoreData(stored);
+      }
+    }
+    
     setLoading(false);
-  }, [searchParams]);
+  }, [searchParams, params.id]);
 
   if (loading) {
     return (
