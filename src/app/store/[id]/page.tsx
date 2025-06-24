@@ -148,14 +148,33 @@ export default function StorePage() {
               <div key={product.id} className="col-md-6 col-lg-4">
                 <div className="card h-100 shadow-sm">
                   <div 
-                    className="card-img-top d-flex align-items-center justify-content-center"
-                    style={{ 
-                      height: '200px', 
-                      backgroundColor: colors.light,
-                      color: colors.muted
-                    }}
+                    className="position-relative overflow-hidden"
+                    style={{ height: '200px' }}
                   >
-                    <i className="fas fa-image fa-3x"></i>
+                    <img
+                      src={`https://picsum.photos/400/300?random=${product.id}`}
+                      alt={product.name}
+                      className="card-img-top w-100 h-100"
+                      style={{ 
+                        objectFit: 'cover',
+                        transition: 'transform 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.transform = 'scale(1.05)';
+                      }}
+                      onMouseLeave={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.transform = 'scale(1)';
+                      }}
+                    />
+                    <div 
+                      className="position-absolute top-0 start-0 w-100 h-100"
+                      style={{
+                        background: `linear-gradient(45deg, ${colors.primary}15, transparent)`,
+                        pointerEvents: 'none'
+                      }}
+                    ></div>
                   </div>
                   <div className="card-body">
                     <div className="d-flex justify-content-between align-items-start mb-2">
